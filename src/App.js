@@ -19,23 +19,65 @@ export default function App() {
 
 
   }
+  const handleQuery = async () => {
+    if (barcodeRef.current.value.length == 0) {
+      alert("沒有輸入barcode")
+      return
+    }
+    try {
+      await axios.get(
+       "https://us-central1-announce-a6f78.cloudfunctions.net/api/api/getOne/"+barcodeRef.current.value,
+        // "http://127.0.0.1:3120/api/getOne/"+barcodeRef.current.value,
+         {
+        
+      }
+
+      ).catch(function (error) {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser 
+          // and an instance of http.ClientRequest in node.js
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+        }
+
+      }).then(function (response) {
+        alert(response.status)
+        console.log(response.data)
+      })
+
+
+    } catch (error) {
+      console.log(error); // this is the main part. Use the response property from the error object
+
+      console.log(error.response); // this is the main part. Use the response property from the error object
+
+      return error.response;
+    }
+  }
   const handleSubmit = async () => {
     if (inputRef.current.value.length == 0) {
       alert("沒有輸入日期")
       return
     }
-    const params = {
-      barcode: barcodeRef.current.value,
-      expireDate: inputRef.current.value,
-
-    };
     console.log(inputRef.current.value)
     console.log(barcodeRef.current.value)
+ 
     try {
       await axios.post(
-        "https://us-central1-announce-a6f78.cloudfunctions.net/api/api/post",
+       //"https://us-central1-announce-a6f78.cloudfunctions.net/api/api/post",
+        // "http://127.0.0.1:3120/api/post",
         {
-          params,
+          barcode: barcodeRef.current.value,
+          expireDate: inputRef.current.value
         }, {
         headers: {
           "Content-Type": "application/json"
@@ -43,7 +85,24 @@ export default function App() {
         }
       }
 
-      ).then(function (response) {
+      ).catch(function (error) {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser 
+          // and an instance of http.ClientRequest in node.js
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+        }
+
+      }).then(function (response) {
 
         alert(response.status)
       })
@@ -80,18 +139,21 @@ export default function App() {
             onUpdate={(err, result) => onUpdateScreen(err, result)}
           />
         )}
+         {toggle && (<div className="dialog-box">
+          <input type="text" placeholder="barcode" ref={barcodeRef} /></div>)
+        }
+        <p></p>
         {toggle && (<div className="dialog-box">
           <input type="text" placeholder="到期日(yyyymmdd)" ref={inputRef} /></div>)
         }
-        {toggle && (<div className="dialog-box">
-          <input type="text" placeholder="barcode" ref={barcodeRef} /></div>)
-        }
+       
         <p>{data}</p>
       </>
       <div>
         {show && <button onClick={byTextInput} > 手動輸入 </button>}
-        {!show && <button onClick={onCapture} > Capture </button>}
-        {toggle && (<button onClick={handleSubmit}   > Submit </button>)
+        {!show && <button onClick={onCapture} > 拍照 </button>}
+        {toggle && (<button onClick={handleSubmit}   > Submit </button>)}
+        {toggle && (<button onClick={handleQuery}   > 查詢 </button>)
         }
       </div>
     </div>
