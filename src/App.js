@@ -50,8 +50,11 @@ export default function App() {
         }
 
       }).then(function (response) {
-        alert(response.status)
+         
         console.log(response.data)
+        if(response.status==200){
+        inputRef.current.value=response.data.expireDate
+}
       })
 
 
@@ -73,7 +76,7 @@ export default function App() {
  
     try {
       await axios.post(
-       //"https://us-central1-announce-a6f78.cloudfunctions.net/api/api/post",
+      "https://us-central1-announce-a6f78.cloudfunctions.net/api/api/post",
         // "http://127.0.0.1:3120/api/post",
         {
           barcode: barcodeRef.current.value,
@@ -103,8 +106,10 @@ export default function App() {
         }
 
       }).then(function (response) {
-
-        alert(response.status)
+       if(response.status==200){
+        alert("上傳成功")
+       }
+       
       })
 
 
